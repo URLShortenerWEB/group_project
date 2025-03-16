@@ -2,8 +2,8 @@
 
 ## Group members
 
-Bayanov Bakhyt
-Omarov Dauren
+Bayanov Bakhyt,
+Omarov Dauren,
 Turanov Muslim
 
 ## Description
