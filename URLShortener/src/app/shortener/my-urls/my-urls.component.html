@@ -4,18 +4,41 @@
   </mat-card-header>
 
   <mat-card-content>
+    <!-- Фильтр по категориям -->
+    <mat-form-field appearance="fill" class="filter-control">
+      <mat-label>Фильтр по категории</mat-label>
+      <mat-select
+        (selectionChange)="onCategoryChange($event.value)"
+        [value]="selectedCategory"
+      >
+        <mat-option [value]="null">Все категории</mat-option>
+        <mat-option *ngFor="let category of categories" [value]="category.id">
+          {{ category.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
     @if (isLoading) {
     <div class="loading-spinner">
       <mat-spinner diameter="50"></mat-spinner>
     </div>
-    } @if (!isLoading && urls.length > 0) {
+    } @if (!isLoading && filteredUrls.length > 0) {
     <app-url-table
-      [urls]="urls"
+      [urls]="filteredUrls"
+      [categories]="categories"
       (urlUpdated)="handleUrlUpdated($event)"
       (urlDeleted)="handleUrlDeleted($event)"
     ></app-url-table>
-    } @if (!isLoading && urls.length === 0) {
-    <div class="no-results">Нет созданных ссылок</div>
+    } @if (!isLoading && filteredUrls.length === 0) {
+    <div class="no-results">
+      @if (selectedCategory) { Нет ссылок в выбранной категории } @else { Нет
+      созданных ссылок }
+    </div>
     }
   </mat-card-content>
 </mat-card>
+
+<div class="debug-info" *ngIf="selectedCategory">
+  Фильтр активен: ID категории {{ selectedCategory }} | Найдено:
+  {{ filteredUrls.length }} ссылок
+</div>

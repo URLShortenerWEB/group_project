@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ShortURL, CreateShortURL } from './models/short-url.model';
+import {
+  ShortURL,
+  CreateShortURL,
+  Category,
+  UpdateShortURL,
+} from './models/short-url.model';
 
 @Injectable({ providedIn: 'root' })
 export class ShortenerService {
@@ -28,5 +33,17 @@ export class ShortenerService {
   deleteMyURL(id: number): Observable<void> {
     const url = `${this.API_URL}${id}/`;
     return this.http.delete<void>(url);
+  }
+
+  getCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(`${this.API_URL}category/`);
+  }
+
+  updateShortURL(id: number, data: UpdateShortURL): Observable<ShortURL> {
+    return this.http.patch<ShortURL>(`${this.API_URL}${id}/`, data);
+  }
+
+  getURLsByCategory(categoryId: number): Observable<ShortURL[]> {
+    return this.http.get<ShortURL[]>(`${this.API_URL}category/${categoryId}/`);
   }
 }

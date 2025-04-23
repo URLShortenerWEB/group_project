@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { ShortURL } from '../../../shortener/models/short-url.model';
+import { Category, ShortURL } from '../../../shortener/models/short-url.model';
 import { MatDialog } from '@angular/material/dialog';
 import { EditUrlDialogComponent } from '../edit-url-dialog/edit-url-dialog.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
@@ -24,12 +24,14 @@ import { TruncatePipe } from '../../pipes/truncate.pipe';
 })
 export class UrlTableComponent {
   @Input() urls: ShortURL[] = [];
+  @Input() categories: Category[] = [];
   @Output() urlUpdated = new EventEmitter<ShortURL>();
   @Output() urlDeleted = new EventEmitter<number>();
 
   displayedColumns: string[] = [
     'original_url',
     'short_url',
+    'category',
     'click_count',
     'created_at',
     'actions',
@@ -39,14 +41,21 @@ export class UrlTableComponent {
 
   editUrl(url: ShortURL): void {
     const dialogRef = this.dialog.open(EditUrlDialogComponent, {
-      width: '400px',
-      data: { originalUrl: url.original_url },
+      width: '500px',
+      data: {
+        originalUrl: url.original_url,
+        categoryId: typeof url.category === 'number' ? url.category : null,
+        categories: this.categories,
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const updatedUrl = { ...url, original_url: result };
-        this.urlUpdated.emit(updatedUrl);
+        this.urlUpdated.emit({
+          ...url,
+          original_url: result.original_url,
+          category: result.category_id,
+        });
       }
     });
   }

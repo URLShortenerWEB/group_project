@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ShortenerService } from '../shortener.service';
 import { AuthService } from '../../auth/auth.service';
-import { ShortURL } from '../models/short-url.model';
-import { CommonModule, NgIf } from '@angular/common';
+import { ShortURL, Category } from '../models/short-url.model';
+import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { UrlTableComponent } from '../../shared/components/url-table/url-table.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-my-urls',
@@ -16,11 +18,16 @@ import { UrlTableComponent } from '../../shared/components/url-table/url-table.c
     CommonModule,
     MatCardModule,
     MatProgressSpinnerModule,
+    MatFormFieldModule,
+    MatSelectModule,
     UrlTableComponent,
   ],
 })
 export class MyUrlsComponent implements OnInit {
   urls: ShortURL[] = [];
+  filteredUrls: ShortURL[] = [];
+  categories: Category[] = [];
+  selectedCategory: number | null = null;
   isLoading = true;
 
   constructor(
@@ -29,7 +36,23 @@ export class MyUrlsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadMyURLs();
+    console.log('Загрузка данных...');
+    this.loadData();
+  }
+
+  loadData(): void {
+    this.isLoading = true;
+    this.shortenerService.getCategories().subscribe({
+      next: (categories) => {
+        console.log('Получены категории:', categories);
+        this.categories = categories;
+        this.loadMyURLs();
+      },
+      error: (err) => {
+        console.error('Ошибка загрузки категорий:', err);
+        this.isLoading = false;
+      },
+    });
   }
 
   loadMyURLs(): void {
@@ -37,6 +60,7 @@ export class MyUrlsComponent implements OnInit {
       this.shortenerService.getMyURLs(this.authService.userId).subscribe({
         next: (urls) => {
           this.urls = urls;
+          this.applyFilter();
           this.isLoading = false;
         },
         error: () => {
@@ -45,17 +69,54 @@ export class MyUrlsComponent implements OnInit {
       });
     }
   }
-  handleUrlUpdated(updatedUrl: ShortURL): void {
-    this.shortenerService
-      .updateMyURL(updatedUrl.id, updatedUrl.original_url)
-      .subscribe({
-        next: (response) => {
-          this.urls = this.urls.map((url) =>
-            url.id === response.id ? response : url
-          );
-        },
-        error: () => {},
+
+  applyFilter(): void {
+    console.log('Применение фильтра для категории:', this.selectedCategory);
+
+    if (this.selectedCategory) {
+      this.filteredUrls = this.urls.filter((url) => {
+        // Получаем категорию как число
+        const urlCategoryId =
+          typeof url.category === 'number' ? url.category : null;
+        const matches = urlCategoryId === this.selectedCategory;
+        console.log(
+          `Ссылка ${url.id} (категория ${urlCategoryId}): ${
+            matches ? 'совпадение' : 'не подходит'
+          }`
+        );
+        return matches;
       });
+    } else {
+      this.filteredUrls = [...this.urls];
+    }
+
+    console.log('Результат фильтрации:', this.filteredUrls);
+  }
+
+  onCategoryChange(categoryId: number | null): void {
+    this.selectedCategory = categoryId;
+    this.applyFilter();
+  }
+
+  handleUrlUpdated(updatedUrl: ShortURL): void {
+    // Получаем category_id как число
+    const categoryId =
+      typeof updatedUrl.category === 'number' ? updatedUrl.category : null;
+
+    const updateData = {
+      original_url: updatedUrl.original_url,
+      category_id: categoryId,
+    };
+
+    this.shortenerService.updateShortURL(updatedUrl.id, updateData).subscribe({
+      next: (response) => {
+        this.urls = this.urls.map((url) =>
+          url.id === response.id ? response : url
+        );
+        this.applyFilter();
+      },
+      error: () => {},
+    });
   }
 
   handleUrlDeleted(deletedId: number): void {

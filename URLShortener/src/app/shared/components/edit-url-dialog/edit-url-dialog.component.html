@@ -3,21 +3,32 @@
   <mat-form-field appearance="fill" class="w-full">
     <mat-label>Оригинальная ссылка</mat-label>
     <input matInput [formControl]="urlControl" />
-    <mat-error *ngIf="urlControl.hasError('required')">
-      Поле обязательно
-    </mat-error>
-    <mat-error *ngIf="urlControl.hasError('pattern')">
-      Введите корректный URL
-    </mat-error>
+    <mat-error *ngIf="urlControl.hasError('required')"
+      >Обязательное поле</mat-error
+    >
+    <mat-error *ngIf="urlControl.hasError('pattern')"
+      >Некорректный URL</mat-error
+    >
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-full">
+    <mat-label>Категория</mat-label>
+    <mat-select [formControl]="categoryControl">
+      <mat-option [value]="null">Без категории</mat-option>
+      <mat-option *ngFor="let category of categories" [value]="category.id">
+        {{ category.name }}
+      </mat-option>
+    </mat-select>
   </mat-form-field>
 </mat-dialog-content>
+
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Отмена</button>
   <button
     mat-button
-    [mat-dialog-close]="urlControl.value"
-    [disabled]="urlControl.invalid"
+    (click)="save()"
     color="primary"
+    [disabled]="urlControl.invalid"
   >
     Сохранить
   </button>
