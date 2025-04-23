@@ -70,6 +70,8 @@ export class UrlTableComponent {
 
     dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
+        this.urls = this.urls.filter((u) => u.id !== url.id);
+
         this.urlDeleted.emit(url.id);
       }
     });
