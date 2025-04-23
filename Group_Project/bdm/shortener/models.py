@@ -2,10 +2,14 @@
 from django.conf import settings
 from django.db import models
 
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True,)
+
 class ShortURL(models.Model):
     owner        = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='short_urls')
-    original_url = models.URLField()
+    original_url = models.URLField(max_length=500)
     short_code   = models.CharField(max_length=10, unique=True)
+    category     = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='short_urls')
     created_at   = models.DateTimeField(auto_now_add=True)
     updated_at   = models.DateTimeField(auto_now=True)
     active       = models.BooleanField(default=True)

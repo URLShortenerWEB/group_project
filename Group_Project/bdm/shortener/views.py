@@ -2,14 +2,14 @@ from django.shortcuts import render
 import string
 import random
 
-from django.db.models import F
+from django.db.models import F, Q
 
 from django.shortcuts import redirect
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from .models import ShortURL, ClickEvent
-from .serializers import ShortURLSerializer
+from .models import ShortURL, ClickEvent, Category
+from .serializers import ShortURLSerializer, CategoryURLSerializer
 
 # Create your views here.
 
@@ -19,6 +19,18 @@ def generate_short_code(length: int = 6) -> str:
         code = ''.join(random.choices(chars, k=length))
         if not ShortURL.objects.filter(short_code=code).exists():
             return code
+
+class CategoryListView(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategoryURLSerializer
+    permission_classes = [AllowAny]
+
+class CategoryRetrieveView(generics.RetrieveAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategoryURLSerializer
+    permission_classes = [AllowAny]
+    lookup_field = 'pk'
+
 
 class ShortURLListByOwnerAPIView(generics.ListAPIView):
 
