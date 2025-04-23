@@ -14,7 +14,6 @@ import { UrlTableComponent } from '../../shared/components/url-table/url-table.c
   standalone: true,
   imports: [
     CommonModule,
-    NgIf,
     MatCardModule,
     MatProgressSpinnerModule,
     UrlTableComponent,
@@ -45,5 +44,26 @@ export class MyUrlsComponent implements OnInit {
         },
       });
     }
+  }
+  handleUrlUpdated(updatedUrl: ShortURL): void {
+    this.shortenerService
+      .updateMyURL(updatedUrl.id, updatedUrl.original_url)
+      .subscribe({
+        next: (response) => {
+          this.urls = this.urls.map((url) =>
+            url.id === response.id ? response : url
+          );
+        },
+        error: () => {},
+      });
+  }
+
+  handleUrlDeleted(deletedId: number): void {
+    this.shortenerService.deleteMyURL(deletedId).subscribe({
+      next: () => {
+        this.urls = this.urls.filter((url) => url.id !== deletedId);
+      },
+      error: () => {},
+    });
   }
 }

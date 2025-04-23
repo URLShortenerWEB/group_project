@@ -18,7 +18,6 @@ export class AuthInterceptor implements HttpInterceptor {
     request: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
-    // Используем isLoggedIn вместо getAccessToken
     if (this.authService.isLoggedIn) {
       request = request.clone({
         setHeaders: {

@@ -44,19 +44,21 @@
         <mat-icon>content_copy</mat-icon>
       </button>
 
+      <!-- Редактировать -->
       <button
         mat-icon-button
         color="primary"
-        (click)="copyToClipboard(element.short_url)"
+        (click)="editUrl(element)"
         matTooltip="Редактировать"
       >
-        <mat-icon>settings</mat-icon>
+        <mat-icon>edit</mat-icon>
       </button>
 
+      <!-- Удалить -->
       <button
         mat-icon-button
         color="warn"
-        (click)="copyToClipboard(element.short_url)"
+        (click)="deleteUrl(element)"
         matTooltip="Удалить"
       >
         <mat-icon>delete</mat-icon>

@@ -1,0 +1,24 @@
+<h2 mat-dialog-title>Редактировать ссылку</h2>
+<mat-dialog-content>
+  <mat-form-field appearance="fill" class="w-full">
+    <mat-label>Оригинальная ссылка</mat-label>
+    <input matInput [formControl]="urlControl" />
+    <mat-error *ngIf="urlControl.hasError('required')">
+      Поле обязательно
+    </mat-error>
+    <mat-error *ngIf="urlControl.hasError('pattern')">
+      Введите корректный URL
+    </mat-error>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Отмена</button>
+  <button
+    mat-button
+    [mat-dialog-close]="urlControl.value"
+    [disabled]="urlControl.invalid"
+    color="primary"
+  >
+    Сохранить
+  </button>
+</mat-dialog-actions>

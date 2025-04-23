@@ -1,11 +1,12 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ShortURL } from '../../../shortener/models/short-url.model';
+import { MatDialog } from '@angular/material/dialog';
+import { EditUrlDialogComponent } from '../edit-url-dialog/edit-url-dialog.component';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
-import { Clipboard } from '@angular/cdk/clipboard';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
 import { TruncatePipe } from '../../pipes/truncate.pipe';
 
 @Component({
@@ -18,12 +19,14 @@ import { TruncatePipe } from '../../pipes/truncate.pipe';
     MatTableModule,
     MatIconModule,
     MatButtonModule,
-    DatePipe,
     TruncatePipe,
   ],
 })
 export class UrlTableComponent {
   @Input() urls: ShortURL[] = [];
+  @Output() urlUpdated = new EventEmitter<ShortURL>();
+  @Output() urlDeleted = new EventEmitter<number>();
+
   displayedColumns: string[] = [
     'original_url',
     'short_url',
@@ -32,10 +35,40 @@ export class UrlTableComponent {
     'actions',
   ];
 
-  constructor(private clipboard: Clipboard, private snackBar: MatSnackBar) {}
+  constructor(private dialog: MatDialog) {}
+
+  editUrl(url: ShortURL): void {
+    const dialogRef = this.dialog.open(EditUrlDialogComponent, {
+      width: '400px',
+      data: { originalUrl: url.original_url },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const updatedUrl = { ...url, original_url: result };
+        this.urlUpdated.emit(updatedUrl);
+      }
+    });
+  }
+
+  deleteUrl(url: ShortURL): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Удаление ссылки',
+        message: 'Вы уверены, что хотите удалить эту ссылку?',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.urlDeleted.emit(url.id);
+      }
+    });
+  }
 
   copyToClipboard(text: string): void {
-    this.clipboard.copy(text);
-    this.snackBar.open('Ссылка скопирована!', 'Закрыть', { duration: 2000 });
+    navigator.clipboard.writeText(text).then(() => {
+      console.log('Ссылка скопирована в буфер обмена');
+    });
   }
 }

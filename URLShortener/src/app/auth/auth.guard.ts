@@ -9,7 +9,6 @@ export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(): boolean {
-    // Используем isLoggedIn без скобок (это getter)
     if (this.authService.isLoggedIn) {
       return true;
     } else {

@@ -4,17 +4,18 @@
   </mat-card-header>
 
   <mat-card-content>
-    <div *ngIf="isLoading" class="loading-spinner">
+    @if (isLoading) {
+    <div class="loading-spinner">
       <mat-spinner diameter="50"></mat-spinner>
     </div>
-
+    } @if (!isLoading && urls.length > 0) {
     <app-url-table
       [urls]="urls"
-      *ngIf="!isLoading && urls.length > 0"
+      (urlUpdated)="handleUrlUpdated($event)"
+      (urlDeleted)="handleUrlDeleted($event)"
     ></app-url-table>
-
-    <div *ngIf="!isLoading && urls.length === 0" class="no-results">
-      <p>Вы еще не создали ни одной сокращенной ссылки</p>
-    </div>
+    } @if (!isLoading && urls.length === 0) {
+    <div class="no-results">Нет созданных ссылок</div>
+    }
   </mat-card-content>
 </mat-card>
