@@ -1,7 +1,9 @@
 .login-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 12px;
   height: 100vh;
 }
 
@@ -24,4 +26,16 @@ button {
   color: #f44336;
   margin-bottom: 15px;
   text-align: center;
+}
+.register-prompt {
+  margin-top: 16px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.register-prompt button {
+  width: 50%;
 }

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, NgIf } from '@angular/common';
 import { ShortenerService } from '../shortener.service';
 import { AuthService } from '../../auth/auth.service';
 import { ShortURL } from '../models/short-url.model';
+import { CommonModule, NgIf } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { UrlTableComponent } from '../../shared/components/url-table/url-table.component';
@@ -34,11 +34,8 @@ export class MyUrlsComponent implements OnInit {
   }
 
   loadMyURLs(): void {
-    this.isLoading = true;
-    // Предполагаем, что у нас есть ID пользователя
-    const userId = this.authService.getUserId(); // Нужно добавить этот метод в AuthService
-    if (userId) {
-      this.shortenerService.getMyURLs(userId).subscribe({
+    if (this.authService.userId) {
+      this.shortenerService.getMyURLs(this.authService.userId).subscribe({
         next: (urls) => {
           this.urls = urls;
           this.isLoading = false;

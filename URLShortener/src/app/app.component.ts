@@ -23,8 +23,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 export class AppComponent {
   constructor(private authService: AuthService) {}
 
+  // Используем isLoggedIn как свойство (getter)
   get isLoggedIn(): boolean {
-    return this.authService.isLoggedIn();
+    return this.authService.isLoggedIn;
   }
 
   logout(): void {

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,6 +21,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatButtonModule,
     NgIf,
     ReactiveFormsModule,
+    RouterModule,
   ],
 })
 export class LoginComponent {

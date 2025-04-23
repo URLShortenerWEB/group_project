@@ -2,62 +2,29 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { Router } from '@angular/router';
-import { User, AuthResponse } from '../models/user.model';
+import { LoginUser, RegisterUser, AuthResponse } from '../models/user.model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly AUTH_URL = 'http://localhost:8000/api/token/';
   private readonly REGISTER_URL = 'http://localhost:8000/api/register/';
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
-  isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+  private authStatus = new BehaviorSubject<boolean>(false);
 
   constructor(private http: HttpClient, private router: Router) {
-    this.checkInitialAuth();
+    this.checkAuthStatus();
   }
 
-  private checkInitialAuth(): void {
-    const token = this.getAccessToken();
-    this.isAuthenticatedSubject.next(!!token);
+  private checkAuthStatus(): void {
+    const token = localStorage.getItem('access_token');
+    this.authStatus.next(!!token);
   }
 
-  login(user: User): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(this.AUTH_URL, user).pipe(
-      tap((response) => {
-        this.setTokens(response);
-        this.isAuthenticatedSubject.next(true);
-        this.router.navigate(['/']);
-      })
-    );
+  get isLoggedIn(): boolean {
+    return !!localStorage.getItem('access_token');
   }
 
-  logout(): void {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    this.isAuthenticatedSubject.next(false);
-    this.router.navigate(['/login']);
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.getAccessToken();
-  }
-
-  getAccessToken(): string | null {
-    return localStorage.getItem('access_token');
-  }
-
-  getRefreshToken(): string | null {
-    return localStorage.getItem('refresh_token');
-  }
-
-  private setTokens(tokens: AuthResponse): void {
-    localStorage.setItem('access_token', tokens.access);
-    localStorage.setItem('refresh_token', tokens.refresh);
-  }
-
-  getUserId(): number | null {
-    const token = this.getAccessToken();
+  get userId(): number | null {
+    const token = localStorage.getItem('access_token');
     if (!token) return null;
 
     try {
@@ -66,5 +33,38 @@ export class AuthService {
     } catch (e) {
       return null;
     }
+  }
+
+  register(userData: RegisterUser): Observable<any> {
+    return this.http.post(this.REGISTER_URL, userData).pipe(
+      tap(() => {
+        this.login({
+          username: userData.username,
+          password: userData.password,
+        }).subscribe();
+      })
+    );
+  }
+
+  login(user: LoginUser): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(this.AUTH_URL, user).pipe(
+      tap((response) => {
+        this.setTokens(response);
+        this.authStatus.next(true);
+        this.router.navigate(['/']);
+      })
+    );
+  }
+
+  private setTokens(tokens: AuthResponse): void {
+    localStorage.setItem('access_token', tokens.access);
+    localStorage.setItem('refresh_token', tokens.refresh);
+  }
+
+  logout(): void {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    this.authStatus.next(false);
+    this.router.navigate(['/login']);
   }
 }
