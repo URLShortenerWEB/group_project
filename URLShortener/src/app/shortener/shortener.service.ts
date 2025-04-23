@@ -22,9 +22,16 @@ export class ShortenerService {
     return this.http.get<ShortURL[]>(`${this.API_URL}owner/${ownerId}/`);
   }
 
-  updateMyURL(id: number, newOriginal: string): Observable<ShortURL> {
+  updateMyURL(
+    id: number,
+    newOriginal: string,
+    categoryId?: number | null
+  ): Observable<ShortURL> {
     const url = `${this.API_URL}${id}/`;
-    const body = { original_url: newOriginal };
+    const body = {
+      original_url: newOriginal,
+      category_id: categoryId,
+    };
     return this.http.patch<ShortURL>(url, body, {
       headers: { 'Content-Type': 'application/json' },
     });
@@ -37,10 +44,6 @@ export class ShortenerService {
 
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(`${this.API_URL}category/`);
-  }
-
-  updateShortURL(id: number, data: UpdateShortURL): Observable<ShortURL> {
-    return this.http.patch<ShortURL>(`${this.API_URL}${id}/`, data);
   }
 
   getURLsByCategory(categoryId: number): Observable<ShortURL[]> {

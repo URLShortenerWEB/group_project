@@ -99,24 +99,22 @@ export class MyUrlsComponent implements OnInit {
   }
 
   handleUrlUpdated(updatedUrl: ShortURL): void {
-    // Получаем category_id как число
     const categoryId =
       typeof updatedUrl.category === 'number' ? updatedUrl.category : null;
 
-    const updateData = {
-      original_url: updatedUrl.original_url,
-      category_id: categoryId,
-    };
-
-    this.shortenerService.updateShortURL(updatedUrl.id, updateData).subscribe({
-      next: (response) => {
-        this.urls = this.urls.map((url) =>
-          url.id === response.id ? response : url
-        );
-        this.applyFilter();
-      },
-      error: () => {},
-    });
+    this.shortenerService
+      .updateMyURL(updatedUrl.id, updatedUrl.original_url, categoryId)
+      .subscribe({
+        next: (response) => {
+          this.urls = this.urls.map((url) =>
+            url.id === response.id ? response : url
+          );
+          this.applyFilter();
+        },
+        error: (err) => {
+          console.error('Ошибка при обновлении:', err);
+        },
+      });
   }
 
   handleUrlDeleted(deletedId: number): void {
