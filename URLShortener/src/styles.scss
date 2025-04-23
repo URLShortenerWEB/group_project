@@ -1,1 +1,61 @@
-/* You can add global styles to this file, and also import other style files */
+/* Базовые стили */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Общие классы */
+.full-width {
+  width: 100%;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* Стили для Angular Material компонентов */
+.mat-card {
+  margin: 16px;
+  padding: 16px;
+}
+
+.mat-form-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.mat-button {
+  margin-top: 8px;
+}
+
+/* Стили для таблицы */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Стили для формы */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Стили для уведомлений */
+.snackbar-success {
+  background-color: #4caf50;
+  color: white;
+}
+
+.snackbar-error {
+  background-color: #f44336;
+  color: white;
+}

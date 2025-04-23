@@ -1,0 +1,20 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Мои ссылки</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div *ngIf="isLoading" class="loading-spinner">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+
+    <app-url-table
+      [urls]="urls"
+      *ngIf="!isLoading && urls.length > 0"
+    ></app-url-table>
+
+    <div *ngIf="!isLoading && urls.length === 0" class="no-results">
+      <p>Вы еще не создали ни одной сокращенной ссылки</p>
+    </div>
+  </mat-card-content>
+</mat-card>

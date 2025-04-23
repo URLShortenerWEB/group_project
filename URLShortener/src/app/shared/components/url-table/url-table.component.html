@@ -1,0 +1,50 @@
+<table mat-table [dataSource]="urls" class="mat-elevation-z8">
+  <!-- Original URL Column -->
+  <ng-container matColumnDef="original_url">
+    <th mat-header-cell *matHeaderCellDef>Оригинальная ссылка</th>
+    <td mat-cell *matCellDef="let element">
+      <a [href]="element.original_url" target="_blank">{{
+        element.original_url | truncate : 50
+      }}</a>
+    </td>
+  </ng-container>
+
+  <!-- Short URL Column -->
+  <ng-container matColumnDef="short_url">
+    <th mat-header-cell *matHeaderCellDef>Сокращенная ссылка</th>
+    <td mat-cell *matCellDef="let element">
+      <a [href]="element.short_url" target="_blank">{{ element.short_url }}</a>
+    </td>
+  </ng-container>
+
+  <!-- Clicks Column -->
+  <ng-container matColumnDef="click_count">
+    <th mat-header-cell *matHeaderCellDef>Клики</th>
+    <td mat-cell *matCellDef="let element">{{ element.click_count }}</td>
+  </ng-container>
+
+  <!-- Created At Column -->
+  <ng-container matColumnDef="created_at">
+    <th mat-header-cell *matHeaderCellDef>Дата создания</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.created_at | date : "medium" }}
+    </td>
+  </ng-container>
+
+  <!-- Actions Column -->
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Действия</th>
+    <td mat-cell *matCellDef="let element">
+      <button
+        mat-icon-button
+        (click)="copyToClipboard(element.short_url)"
+        matTooltip="Копировать"
+      >
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>

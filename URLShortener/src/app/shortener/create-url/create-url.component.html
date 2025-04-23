@@ -1,0 +1,47 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Сократить ссылку</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Введите URL</mat-label>
+        <input
+          matInput
+          formControlName="original_url"
+          placeholder="https://example.com"
+        />
+        <mat-error *ngIf="form.get('original_url')?.hasError('required')">
+          Поле обязательно для заполнения
+        </mat-error>
+        <mat-error *ngIf="form.get('original_url')?.hasError('pattern')">
+          Введите корректный URL (начинается с http:// или https://)
+        </mat-error>
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!form.valid"
+      >
+        Сократить
+      </button>
+    </form>
+
+    <div *ngIf="shortUrl" class="result-container">
+      <p>Ваша сокращенная ссылка:</p>
+      <div class="url-display">
+        <a [href]="shortUrl" target="_blank">{{ shortUrl }}</a>
+        <button
+          mat-icon-button
+          (click)="copyToClipboard()"
+          matTooltip="Копировать"
+        >
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
