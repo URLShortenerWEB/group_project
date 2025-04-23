@@ -16,4 +16,17 @@ export class ShortenerService {
   getMyURLs(ownerId: number): Observable<ShortURL[]> {
     return this.http.get<ShortURL[]>(`${this.API_URL}owner/${ownerId}/`);
   }
+
+  updateMyURL(id: number, newOriginal: string): Observable<ShortURL> {
+    const url = `${this.API_URL}${id}/`;
+    const body = { original_url: newOriginal };
+    return this.http.patch<ShortURL>(url, body, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  deleteMyURL(id: number): Observable<void> {
+    const url = `${this.API_URL}${id}/`;
+    return this.http.delete<void>(url);
+  }
 }
