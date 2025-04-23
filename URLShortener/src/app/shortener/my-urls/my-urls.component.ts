@@ -99,11 +99,14 @@ export class MyUrlsComponent implements OnInit {
   }
 
   handleUrlUpdated(updatedUrl: ShortURL): void {
-    const categoryId =
-      typeof updatedUrl.category === 'number' ? updatedUrl.category : null;
+    const updateData = {
+      original_url: updatedUrl.original_url,
+      category:
+        typeof updatedUrl.category === 'number' ? updatedUrl.category : null,
+    };
 
     this.shortenerService
-      .updateMyURL(updatedUrl.id, updatedUrl.original_url, categoryId)
+      .updateMyURL(updatedUrl.id, updateData.original_url, updateData.category)
       .subscribe({
         next: (response) => {
           this.urls = this.urls.map((url) =>

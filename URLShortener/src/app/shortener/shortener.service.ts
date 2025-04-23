@@ -25,12 +25,12 @@ export class ShortenerService {
   updateMyURL(
     id: number,
     newOriginal: string,
-    categoryId?: number | null
+    category?: number | null
   ): Observable<ShortURL> {
     const url = `${this.API_URL}${id}/`;
     const body = {
       original_url: newOriginal,
-      category_id: categoryId,
+      category,
     };
     return this.http.patch<ShortURL>(url, body, {
       headers: { 'Content-Type': 'application/json' },

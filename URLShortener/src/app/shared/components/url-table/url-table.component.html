@@ -69,8 +69,10 @@
   <ng-container matColumnDef="category">
     <th mat-header-cell *matHeaderCellDef>Категория</th>
     <td mat-cell *matCellDef="let element">
-      @if (element.category) {
-      <span class="category-badge">{{ element.category.name }}</span>
+      @if (element.category !== null) {
+      <span class="category-badge">{{
+        getCategoryName(element.category)
+      }}</span>
       } @else {
       <span class="no-category">Без категории</span>
       }

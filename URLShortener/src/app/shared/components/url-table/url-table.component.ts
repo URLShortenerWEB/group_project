@@ -75,6 +75,11 @@ export class UrlTableComponent {
     });
   }
 
+  getCategoryName(categoryId: number): string {
+    const category = this.categories.find((c) => c.id === categoryId);
+    return category ? category.name : 'Неизвестная категория';
+  }
+
   copyToClipboard(text: string): void {
     navigator.clipboard.writeText(text).then(() => {
       console.log('Ссылка скопирована в буфер обмена');
